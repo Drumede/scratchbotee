@@ -243,6 +243,8 @@ async def on_message(message):
                 embed.set_thumbnail(url=thumb)
                 embed.add_field(name="Instructions", value=ins,
                                 inline=False)
+                embed.add_field(name="Notes and Credits", value=note,
+                                inline=False)
                 embedlist.append(embed)
             await message.channel.send(embeds=embedlist)
             await message.remove_reaction("<a:searching:1204038774066257950>",bot.user)
@@ -263,7 +265,7 @@ async def on_message(message):
                         inline=False)
         embed.add_field(name=">invite", value="The invite link.",
                         inline=False)
-        embed.set_footer(text="VERSION 2.05")
+        embed.set_footer(text="VERSION 2.06")
         await message.channel.send(embed=embed)
 
 bot.run(TOKEN)
