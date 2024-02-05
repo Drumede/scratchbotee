@@ -5,7 +5,6 @@ import main
 import scratchattach
 import re
 from datetime import datetime
-
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
