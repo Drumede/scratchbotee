@@ -123,6 +123,8 @@ async def on_message(message):
         icon = user.icon_url
         date = datetime.fromisoformat(post.posted[0:len(post.posted)-2])
         edit = datetime.fromisoformat(post.edited[0:len(post.edited)-2])
+        str(date).replace("Z", "+00:00")
+        str(edit).replace("Z", "+00:00")
         cont = post.html_content
         pattern = re.compile('<.*?>')
         surl = "https://scratch.mit.edu/discuss/topic/" + id[1]
@@ -149,10 +151,10 @@ async def on_message(message):
         for x in range(len(links)):
             templinks = templinks + links[x].split(" ")
         links = templinks
-        print(links)
+#        print(links)
         links = list(filter(lambda x: "scratch.mit.edu" in x, links))
-        print(links)
-        print(len(links))
+#        print(links)
+#        print(len(links))
         embedlist = []
         if len(links) == 1:
             id = main.parse("https://"+links[0]+"/")
