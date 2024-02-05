@@ -121,10 +121,8 @@ async def on_message(message):
         user = post.get_author()
         auth = post.author
         icon = user.icon_url
-        date = datetime.fromisoformat(post.posted)
-        edit = datetime.fromisoformat(post.edited)
-        str(date).replace("Z", "+00:00")
-        str(edit).replace("Z", "+00:00")
+        date = datetime.fromisoformat(post.posted.replace("Z", "+00:00"))
+        edit = datetime.fromisoformat(post.edited.replace("Z", "+00:00"))
 
         cont = post.html_content
         pattern = re.compile('<.*?>')
