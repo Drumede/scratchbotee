@@ -121,8 +121,8 @@ async def on_message(message):
         user = post.get_author()
         auth = post.author
         icon = user.icon_url
-        date = datetime.fromisoformat(post.posted)
-        edit = datetime.fromisoformat(post.edited)
+        date = datetime.fromisoformat(post.posted[0:len(post.posted)-1])
+        edit = datetime.fromisoformat(post.edited[0:len(post.edited)-1])
         cont = post.html_content
         pattern = re.compile('<.*?>')
         surl = "https://scratch.mit.edu/discuss/topic/" + id[1]
@@ -257,7 +257,7 @@ async def on_message(message):
                         inline=False)
         embed.add_field(name=">invite", value="The invite link.",
                         inline=False)
-        embed.set_footer(text="VERSION 2.02")
+        embed.set_footer(text="VERSION 2.03")
         await message.channel.send(embed=embed)
 
 bot.run(TOKEN)
