@@ -96,18 +96,23 @@ async def on_message(message):
 
     def studio(id):
         studio = scratchattach.get_studio(id[1])
+        user = studio.managers(limit=1, offset=0)[0]
+        icon = user.icon_url
         title = studio.title
         desc = studio.description
         thumb = studio.image_url
         fol = studio.follower_count
         proj = studio.project_count
         surl = "https://scratch.mit.edu/studios/" + str(id[1])
+        uurl = "https://scratch.mit.edu/users/" + user.name
         if len(desc) > 300:
             desc = desc[0:300] + "..."
         embed = discord.Embed(title=title, url=surl,
                               #                              description=ins + "/n" + note,
                               color=0x885CD4)
         embed.set_thumbnail(url=thumb)
+        embed.set_author(name=user.name, url=uurl,
+                         icon_url=icon)
         embed.add_field(name="Description", value=desc,
                         inline=False)
         embed.set_footer(text="👤️ " + str(fol) + " 🗳️️ " + str(proj))
@@ -265,7 +270,7 @@ async def on_message(message):
                         inline=False)
         embed.add_field(name=">invite", value="The invite link.",
                         inline=False)
-        embed.set_footer(text="VERSION 2.06")
+        embed.set_footer(text="VERSION 2.1")
         await message.channel.send(embed=embed)
 
 bot.run(TOKEN)
