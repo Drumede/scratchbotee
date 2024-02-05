@@ -126,6 +126,7 @@ async def on_message(message):
         date = date.replace("T", " ")
         edit = edit.replace("T", " ")
         date, edit = datetime.fromisoformat(date), datetime.fromisoformat(edit)
+        print(str(date)+ "\n" + str(edit))
         cont = post.html_content
         pattern = re.compile('<.*?>')
         surl = "https://scratch.mit.edu/discuss/topic/" + id[1]
@@ -162,7 +163,7 @@ async def on_message(message):
             if " " in str(id[1]):
                 filtid = list(filter(lambda x: x != " ", list(str(id[1]))))
                 id[1] = "".join(map(str,filtid))
-#            print(id)
+            print(id)
             if type(id) is list:
                 if id[0] == "pro":
                     embed = project(id)
