@@ -254,6 +254,7 @@ async def on_message(message):
                         inline=False)
         embed.add_field(name=">invite", value="The invite link.",
                         inline=False)
+        embed.set_footer(text="VERSION 2")
         await message.channel.send(embed=embed)
 
 bot.run(TOKEN)
