@@ -8,6 +8,7 @@ from datetime import datetime
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+import math
 load_dotenv()
 TOKEN = os.environ.get("TOKEN")
 GUILD = "just bonus emojis for nitro people (2/2)"
@@ -264,13 +265,43 @@ async def on_message(message):
                          icon_url=message.author.avatar)
         embed.add_field(name=">help", value="The command you are using right now.",
                         inline=False)
-        embed.add_field(name=">search", value="Takes 4 parameters:\nQuery: The search query."
-                                              "\nAmount to display: The amount of projects to "
-                                              "display.\nType: Can be either \"trending\" or \"popular\"\nLanguage: idk what languages you can use for this except \"en\" sorry",
+        embed.add_field(name=">search [q],[ll],[m],[l]", value="Takes 4 parameters:\n[q] Query: The search query."
+                                              "\n[ll] Amount to display: The amount of projects to "
+                                              "display.\n[m] Type: Can be either \"trending\" or \"popular\"\n[l] Language: idk what languages you can use for this except \"en\" sorry",
                         inline=False)
         embed.add_field(name=">invite", value="The invite link.",
                         inline=False)
-        embed.set_footer(text="VERSION 2.11")
+        embed.add_field(name=">randomq [q]", value="Random project based on query.\n"
+                                                   "[q] Query: Query to search projects under.",
+                        inline=False)
+        embed.add_field(name=">randome [m]", value="Random project based on the explore page.\n"
+                                                   "[m] Explore page to use, can only be \"trending\" or \"popular\".",
+                        inline=False)
+        embed.set_footer(text="VERSION 3")
         await message.channel.send(embed=embed)
-
+    if str(message.content)[0:8] == ">randomq":
+        await message.add_reaction("<a:searching:1204038774066257950>")
+        q = str(message.content)[8:]
+        a = 3
+        pt = ["popular","trending"]
+        search = []
+        for i in range(a):
+            search += scratchattach.search_projects(query=q, mode=random.choice(pt), language="en", limit=40, offset=i)
+        proj = search[random.randint(0,len(search))]
+        pid = proj.id
+        embed = project([None,int(pid)])
+        await message.channel.send(embed=embed)
+        await message.remove_reaction("<a:searching:1204038774066257950>", bot.user)
+    if str(message.content)[0:8] == ">randome":
+        await message.add_reaction("<a:searching:1204038774066257950>")
+        q = str(message.content)[9:]
+        a = 3
+        search = []
+        for i in range(a):
+            search += scratchattach.explore_projects(query="*", mode=q, language="en", limit=40, offset=i)
+        proj = search[random.randint(0,len(search))]
+        pid = proj.id
+        embed = project([None,int(pid)])
+        await message.channel.send(embed=embed)
+        await message.remove_reaction("<a:searching:1204038774066257950>", bot.user)
 bot.run(TOKEN)
