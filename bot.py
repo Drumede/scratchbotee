@@ -146,10 +146,14 @@ async def on_message(message):
     if "https://" in message.content:
 #        print("yes")
         links = message.content.split("https://")
-#        print(links)
+        templinks = []
+        for x in range(len(links)):
+            templinks = templinks + links[x].split(" ")
+        links = templinks
+        print(links)
         links = list(filter(lambda x: "scratch.mit.edu" in x, links))
-#        print(links)
-#        print(len(links))
+        print(links)
+        print(len(links))
         embedlist = []
         if len(links) == 1:
             id = main.parse("https://"+links[0]+"/")
@@ -254,7 +258,7 @@ async def on_message(message):
                         inline=False)
         embed.add_field(name=">invite", value="The invite link.",
                         inline=False)
-        embed.set_footer(text="VERSION 2")
+        embed.set_footer(text="VERSION 2.02")
         await message.channel.send(embed=embed)
 
 bot.run(TOKEN)
