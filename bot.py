@@ -121,8 +121,8 @@ async def on_message(message):
         user = post.get_author()
         auth = post.author
         icon = user.icon_url
-        date = datetime.fromisoformat(post.posted[0:len(post.posted)-2])
-        edit = datetime.fromisoformat(post.edited[0:len(post.edited)-2])
+        date = datetime.fromisoformat(post.posted)
+        edit = datetime.fromisoformat(post.edited)
         str(date).replace("Z", "+00:00")
         str(edit).replace("Z", "+00:00")
 
