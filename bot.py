@@ -111,7 +111,7 @@ async def on_message(message):
                               #                              description=ins + "/n" + note,
                               color=0x885CD4)
         embed.set_thumbnail(url=thumb)
-        embed.set_author(name=user.name, url=uurl,
+        embed.set_author(name="Host: "+user.name, url=uurl,
                          icon_url=icon)
         embed.add_field(name="Description", value=desc,
                         inline=False)
@@ -270,7 +270,7 @@ async def on_message(message):
                         inline=False)
         embed.add_field(name=">invite", value="The invite link.",
                         inline=False)
-        embed.set_footer(text="VERSION 2.1")
+        embed.set_footer(text="VERSION 2.11")
         await message.channel.send(embed=embed)
 
 bot.run(TOKEN)
