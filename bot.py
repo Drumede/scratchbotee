@@ -15,7 +15,7 @@ GUILD = "just bonus emojis for nitro people (2/2)"
 #intents = discord.Intents.default()
 #intents.message_content = True
 
-activity = discord.Activity(type=discord.ActivityType.listening, name=">help")
+activity = discord.Activity(type=discord.ActivityType.watching, name="for >help")
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all(),activity=activity)
 
 @bot.event
@@ -278,7 +278,7 @@ async def on_message(message):
         embed.add_field(name=">randome [m]", value="Random project based on the explore page.\n"
                                                    "[m] Explore page to use, can only be \"trending\" or \"popular\".",
                         inline=False)
-        embed.set_footer(text="VERSION 3.1")
+        embed.set_footer(text="VERSION 3.11")
         await message.channel.send(embed=embed)
     if str(message.content)[0:8] == ">randomq":
         await message.add_reaction("<a:searching:1204038774066257950>")
