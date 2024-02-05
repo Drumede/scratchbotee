@@ -125,6 +125,7 @@ async def on_message(message):
         edit = datetime.fromisoformat(post.edited[0:len(post.edited)-2])
         str(date).replace("Z", "+00:00")
         str(edit).replace("Z", "+00:00")
+
         cont = post.html_content
         pattern = re.compile('<.*?>')
         surl = "https://scratch.mit.edu/discuss/topic/" + id[1]
