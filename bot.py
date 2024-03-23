@@ -309,7 +309,7 @@ async def on_message(message):
                         inline=False)
         embed.add_field(name=">invite", value="The invite link.",
                         inline=False)
-        embed.set_footer(text="VERSION 3.5")
+        embed.set_footer(text="VERSION 3.50")
         await message.channel.send(embed=embed)
 
 bot.run(TOKEN)
