@@ -5,6 +5,8 @@ import scratchattach
 def parse(url):
     if url[0:24] == "https://scratch.mit.edu/" and not (url[24:] == ""):
         if url.split("/")[3] == "projects":
+            if url.split("/")[5] == "fullscreen":
+                return ["prof", url.split("/")[4]]
             return ["pro",url.split("/")[4]]
 
         elif url.split("/")[3] == "users":
@@ -15,5 +17,7 @@ def parse(url):
 
         elif url.split("/")[3] == "discuss" and url.split("/")[4] == "topic":
             return ["for", url.split("/")[5]]
+
+
     else:
         return None
