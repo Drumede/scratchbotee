@@ -8,13 +8,15 @@ from datetime import datetime
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+import math
 load_dotenv()
 TOKEN = os.environ.get("TOKEN")
 GUILD = "just bonus emojis for nitro people (2/2)"
 #intents = discord.Intents.default()
 #intents.message_content = True
 
-bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+activity = discord.Activity(type=discord.ActivityType.watching, name="for >help")
+bot = commands.Bot(command_prefix="!", intents=discord.Intents.all(),activity=activity)
 
 @bot.event
 async def on_ready():
@@ -62,13 +64,11 @@ async def on_message(message):
         embed.set_author(name=author, url=uurl,
                          icon_url=icon)
         embed.set_thumbnail(url=thumb)
-        if ins != "":
-            embed.add_field(name="Instructions", value=ins,
-                            inline=False)
-        if note != "":
-            embed.add_field(name="Notes and Credits", value=note,
-                            inline=False)
-        embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem}")
+        embed.add_field(name="Instructions", value=ins,
+                        inline=False)
+        embed.add_field(name="Notes and Credits", value=note,
+                        inline=False)
+        embed.set_footer(text="👁️ " + str(vie) + " ❤️ " + str(lov) + " ⭐ " + str(fav) + " 🍥 " + str(rem))
         return embed
 
     def user(id):
@@ -89,33 +89,35 @@ async def on_message(message):
                               #                              description=ins + "/n" + note,
                               color=0x885CD4)
         embed.set_thumbnail(url=icon)
-        if abm != "":
-            embed.add_field(name="About me", value=abm,
-                            inline=False)
-        if wiw != "":
-            embed.add_field(name="What I'm working on", value=wiw,
-                            inline=False)
-        embed.set_footer(text=f"👤️ {fol1} 🫂️ {fol2} 🗳️️ {pro} 🏳️️️ {con}")
+        embed.add_field(name="About me", value=abm,
+                        inline=False)
+        embed.add_field(name="What I'm working on", value=wiw,
+                        inline=False)
+        embed.set_footer(text="👤️ " + str(fol1) + " 🫂️ " + str(fol2) + " 🗳️️ " + str(pro) + " 🏳️️️ " + str(con))
         return embed
 
     def studio(id):
         studio = scratchattach.get_studio(id[1])
+        user = studio.managers(limit=1, offset=0)[0]
+        icon = user.icon_url
         title = studio.title
         desc = studio.description
         thumb = studio.image_url
         fol = studio.follower_count
         proj = studio.project_count
         surl = "https://scratch.mit.edu/studios/" + str(id[1])
+        uurl = "https://scratch.mit.edu/users/" + user.name
         if len(desc) > 300:
             desc = desc[0:300] + "..."
         embed = discord.Embed(title=title, url=surl,
                               #                              description=ins + "/n" + note,
                               color=0x885CD4)
         embed.set_thumbnail(url=thumb)
-        if desc != "":
-            embed.add_field(name="Description", value=desc,
-                            inline=False)
-        embed.set_footer(text=f"👤️ {fol} 🗳️️ {proj}")
+        embed.set_author(name="Host: "+user.name, url=uurl,
+                         icon_url=icon)
+        embed.add_field(name="Description", value=desc,
+                        inline=False)
+        embed.set_footer(text="👤️ " + str(fol) + " 🗳️️ " + str(proj))
         return embed
 
     def topic(id):
@@ -126,12 +128,14 @@ async def on_message(message):
         user = post.get_author()
         auth = post.author
         icon = user.icon_url
-        date = datetime.fromisoformat(post.posted[0:len(post.posted)-2])
-        edit = datetime.fromisoformat(post.edited[0:len(post.edited)-2])
-        str(date).replace('+00:00', 'Z')
-        str(edit).replace('+00:00', 'Z')
-        date = date.strftime("%b %d, %Y")
-        edit = edit.strftime("%b %d, %Y")
+        date = post.posted
+        edit = post.edited
+        date = date.replace("T", " ")
+        edit = edit.replace("T", " ")
+        date = post.posted.replace("Z", "+00:00")
+        edit = post.edited.replace("Z", "+00:00")
+        date, edit = datetime.fromisoformat(date), datetime.fromisoformat(edit)
+        print(str(date)+ "\n" + str(edit))
         cont = post.html_content
         pattern = re.compile('<.*?>')
         surl = "https://scratch.mit.edu/discuss/topic/" + id[1]
@@ -148,7 +152,7 @@ async def on_message(message):
                         inline=False)
         embed.set_author(name=auth, url=uurl,
                          icon_url=icon)
-        embed.set_footer(text=f"📥️ {date} 📝️️ {edit}")
+        embed.set_footer(text="📥️ " + str(date.strftime("%b %d, %Y")) + " 📝️️ " + str(edit.strftime("%b %d, %Y")))
         return embed
 
     def fproject(id):
@@ -186,7 +190,7 @@ async def on_message(message):
         if note != "":
             embed.add_field(name="Notes and Credits", value=note,
                             inline=False)
-        embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem}")
+        embed.set_footer(text="👁️ " + str(vie) + " ❤️ " + str(lov) + " ⭐ " + str(fav) + " 🍥 " + str(rem))
         return embed
 
     if "https://" in message.content:
@@ -196,10 +200,10 @@ async def on_message(message):
         for x in range(len(links)):
             templinks = templinks + links[x].split(" ")
         links = templinks
-        print(links)
+#        print(links)
         links = list(filter(lambda x: "scratch.mit.edu" in x, links))
-        print(links)
-        print(len(links))
+#        print(links)
+#        print(len(links))
         embedlist = []
         if len(links) == 1:
             id = main.parse("https://"+links[0]+"/")
@@ -223,7 +227,6 @@ async def on_message(message):
                 elif id[0] == "prof":
                     embed = fproject(id)
                     await message.channel.send(embed=embed)
-
         else:
             for i in range(len(links)):
                 id = main.parse("https://"+links[i]+"/")
@@ -291,6 +294,8 @@ async def on_message(message):
                 embed.set_thumbnail(url=thumb)
                 embed.add_field(name="Instructions", value=ins,
                                 inline=False)
+                embed.add_field(name="Notes and Credits", value=note,
+                                inline=False)
                 embedlist.append(embed)
             await message.channel.send(embeds=embedlist)
             await message.remove_reaction("<a:searching:1204038774066257950>",bot.user)
@@ -305,13 +310,43 @@ async def on_message(message):
                          icon_url=message.author.avatar)
         embed.add_field(name=">help", value="The command you are using right now.",
                         inline=False)
-        embed.add_field(name=">search", value="Takes 4 parameters:\nQuery: The search query."
-                                              "\nAmount to display: The amount of projects to "
-                                              "display.\nType: Can be either \"trending\" or \"popular\"\nLanguage: idk what languages you can use for this except \"en\" sorry",
+        embed.add_field(name=">search [q],[ll],[m],[l]", value="Takes 4 parameters:\n[q] Query: The search query."
+                                              "\n[ll] Amount to display: The amount of projects to "
+                                              "display.\n[m] Type: Can be either \"trending\" or \"popular\"\n[l] Language: idk what languages you can use for this except \"en\" sorry",
                         inline=False)
         embed.add_field(name=">invite", value="The invite link.",
                         inline=False)
-        embed.set_footer(text="VERSION 3.55")
+        embed.add_field(name=">randomq [q]", value="Random project based on query.\n"
+                                                   "[q] Query: Query to search projects under.",
+                        inline=False)
+        embed.add_field(name=">randome [m]", value="Random project based on the explore page.\n"
+                                                   "[m] Explore page to use, can only be \"trending\" or \"popular\".",
+                        inline=False)
+        embed.set_footer(text="VERSION 3.110")
         await message.channel.send(embed=embed)
-
+    if str(message.content)[0:8] == ">randomq":
+        await message.add_reaction("<a:searching:1204038774066257950>")
+        q = str(message.content)[8:]
+        a = 3
+        pt = ["popular","trending"]
+        search = []
+        for i in range(a):
+            search += scratchattach.search_projects(query=q, mode=random.choice(pt), language="en", limit=40, offset=i)
+        proj = search[random.randint(0,len(search))]
+        pid = proj.id
+        embed = project([None,int(pid)])
+        await message.channel.send(embed=embed)
+        await message.remove_reaction("<a:searching:1204038774066257950>", bot.user)
+    if str(message.content)[0:8] == ">randome":
+        await message.add_reaction("<a:searching:1204038774066257950>")
+        q = str(message.content)[9:]
+        a = 3
+        search = []
+        for i in range(a):
+            search += scratchattach.explore_projects(query="*", mode=q, language="en", limit=40, offset=i)
+        proj = search[random.randint(0,len(search))]
+        pid = proj.id
+        embed = project([None,int(pid)])
+        await message.channel.send(embed=embed)
+        await message.remove_reaction("<a:searching:1204038774066257950>", bot.user)
 bot.run(TOKEN)
