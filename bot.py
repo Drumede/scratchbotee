@@ -68,7 +68,7 @@ async def on_message(message):
         if note != "":
             embed.add_field(name="Notes and Credits", value=note,
                             inline=False)
-        embed.set_footer(text="👁️ " + str(vie) + " ❤️ " + str(lov) + " ⭐ " + str(fav) + " 🍥 " + str(rem))
+        embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem}")
         return embed
 
     def user(id):
@@ -95,7 +95,7 @@ async def on_message(message):
         if wiw != "":
             embed.add_field(name="What I'm working on", value=wiw,
                             inline=False)
-        embed.set_footer(text="👤️ " + str(fol1) + " 🫂️ " + str(fol2) + " 🗳️️ " + str(pro) + " 🏳️️️ " + str(con))
+        embed.set_footer(text=f"👤️ {fol1} 🫂️ {fol2} 🗳️️ {pro} 🏳️️️ {con}")
         return embed
 
     def studio(id):
@@ -115,7 +115,7 @@ async def on_message(message):
         if desc != "":
             embed.add_field(name="Description", value=desc,
                             inline=False)
-        embed.set_footer(text="👤️ " + str(fol) + " 🗳️️ " + str(proj))
+        embed.set_footer(text=f"👤️ {fol} 🗳️️ {proj}")
         return embed
 
     def topic(id):
@@ -130,6 +130,8 @@ async def on_message(message):
         edit = datetime.fromisoformat(post.edited[0:len(post.edited)-2])
         str(date).replace('+00:00', 'Z')
         str(edit).replace('+00:00', 'Z')
+        date = date.strftime("%b %d, %Y")
+        edit = edit.strftime("%b %d, %Y")
         cont = post.html_content
         pattern = re.compile('<.*?>')
         surl = "https://scratch.mit.edu/discuss/topic/" + id[1]
@@ -146,7 +148,7 @@ async def on_message(message):
                         inline=False)
         embed.set_author(name=auth, url=uurl,
                          icon_url=icon)
-        embed.set_footer(text="📥️ " + str(date.strftime("%b %d, %Y")) + " 📝️️ " + str(edit.strftime("%b %d, %Y")))
+        embed.set_footer(text=f"📥️ {date} 📝️️ {edit}")
         return embed
 
     def fproject(id):
@@ -184,7 +186,7 @@ async def on_message(message):
         if note != "":
             embed.add_field(name="Notes and Credits", value=note,
                             inline=False)
-        embed.set_footer(text="👁️ " + str(vie) + " ❤️ " + str(lov) + " ⭐ " + str(fav) + " 🍥 " + str(rem))
+        embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem}")
         return embed
 
     if "https://" in message.content:
@@ -309,7 +311,7 @@ async def on_message(message):
                         inline=False)
         embed.add_field(name=">invite", value="The invite link.",
                         inline=False)
-        embed.set_footer(text="VERSION 3.50")
+        embed.set_footer(text="VERSION 3.55")
         await message.channel.send(embed=embed)
 
 bot.run(TOKEN)
