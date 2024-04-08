@@ -64,11 +64,13 @@ async def on_message(message):
         embed.set_author(name=author, url=uurl,
                          icon_url=icon)
         embed.set_thumbnail(url=thumb)
-        embed.add_field(name="Instructions", value=ins,
-                        inline=False)
-        embed.add_field(name="Notes and Credits", value=note,
-                        inline=False)
-        embed.set_footer(text="👁️ " + str(vie) + " ❤️ " + str(lov) + " ⭐ " + str(fav) + " 🍥 " + str(rem))
+        if ins != "":
+            embed.add_field(name="Instructions", value=ins,
+                            inline=False)
+        if note != "":
+            embed.add_field(name="Notes and Credits", value=note,
+                            inline=False)
+        embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem}")
         return embed
 
     def user(id):
@@ -89,11 +91,13 @@ async def on_message(message):
                               #                              description=ins + "/n" + note,
                               color=0x885CD4)
         embed.set_thumbnail(url=icon)
-        embed.add_field(name="About me", value=abm,
-                        inline=False)
-        embed.add_field(name="What I'm working on", value=wiw,
-                        inline=False)
-        embed.set_footer(text="👤️ " + str(fol1) + " 🫂️ " + str(fol2) + " 🗳️️ " + str(pro) + " 🏳️️️ " + str(con))
+        if abm != "":
+            embed.add_field(name="About me", value=abm,
+                            inline=False)
+        if wiw != "":
+            embed.add_field(name="What I'm working on", value=wiw,
+                            inline=False)
+        embed.set_footer(text=f"👤️ {fol1} 🫂️ {fol2} 🗳️️ {pro} 🏳️️️ {con}")
         return embed
 
     def studio(id):
@@ -115,8 +119,9 @@ async def on_message(message):
         embed.set_thumbnail(url=thumb)
         embed.set_author(name="Host: "+user.name, url=uurl,
                          icon_url=icon)
-        embed.add_field(name="Description", value=desc,
-                        inline=False)
+        if desc != "":
+            embed.add_field(name="Description", value=desc,
+                            inline=False)
         embed.set_footer(text="👤️ " + str(fol) + " 🗳️️ " + str(proj))
         return embed
 
@@ -135,6 +140,7 @@ async def on_message(message):
         date = post.posted.replace("Z", "+00:00")
         edit = post.edited.replace("Z", "+00:00")
         date, edit = datetime.fromisoformat(date), datetime.fromisoformat(edit)
+        date, edit = date.strftime("%b %d, %Y"), edit.strftime("%b %d, %Y")
         print(str(date)+ "\n" + str(edit))
         cont = post.html_content
         pattern = re.compile('<.*?>')
@@ -152,7 +158,7 @@ async def on_message(message):
                         inline=False)
         embed.set_author(name=auth, url=uurl,
                          icon_url=icon)
-        embed.set_footer(text="📥️ " + str(date.strftime("%b %d, %Y")) + " 📝️️ " + str(edit.strftime("%b %d, %Y")))
+        embed.set_footer(text=f"📥️ {date} 📝️️ {edit}")
         return embed
 
     def fproject(id):
@@ -190,7 +196,7 @@ async def on_message(message):
         if note != "":
             embed.add_field(name="Notes and Credits", value=note,
                             inline=False)
-        embed.set_footer(text="👁️ " + str(vie) + " ❤️ " + str(lov) + " ⭐ " + str(fav) + " 🍥 " + str(rem))
+        embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem}")
         return embed
 
     if "https://" in message.content:
@@ -322,7 +328,7 @@ async def on_message(message):
         embed.add_field(name=">randome [m]", value="Random project based on the explore page.\n"
                                                    "[m] Explore page to use, can only be \"trending\" or \"popular\".",
                         inline=False)
-        embed.set_footer(text="VERSION 3.110")
+        embed.set_footer(text="VERSION 3.7")
         await message.channel.send(embed=embed)
     if str(message.content)[0:8] == ">randomq":
         await message.add_reaction("<a:searching:1204038774066257950>")
