@@ -43,7 +43,11 @@ async def on_message(message):
         author = project.author
         icon = user.icon_url
         ins = project.instructions
+        ins = ins.split("\n\n")
+        ins = '\n\n'.join([i for i in ins if i != ""])
         note = project.notes
+        note = note.split("\n\n")
+        note = '\n\n'.join([i for i in note if i != ""])
         thumb = project.thumbnail_url
         surl = project.url
         lov = project.loves
@@ -77,7 +81,11 @@ async def on_message(message):
         user = scratchattach.get_user(id[1])
         icon = user.icon_url
         abm = user.about_me
+        abm = abm.split("\n\n")
+        abm = '\n\n'.join([i for i in abm if i != ""])
         wiw = user.wiwo
+        wiw = wiw.split("\n\n")
+        wiw = '\n\n'.join([i for i in wiw if i != ""])
         con = user.country
         fol1 = user.follower_count()
         fol2 = user.following_count()
@@ -106,6 +114,8 @@ async def on_message(message):
         icon = user.icon_url
         title = studio.title
         desc = studio.description
+        desc = desc.split("\n\n")
+        desc = '\n\n'.join([i for i in desc if i != ""])
         thumb = studio.image_url
         fol = studio.follower_count
         proj = studio.project_count
@@ -169,7 +179,11 @@ async def on_message(message):
         author = project.author
         icon = user.icon_url
         ins = project.instructions
+        ins = ins.split("\n\n")
+        ins = '\n\n'.join([i for i in ins if i != ""])
         note = project.notes
+        note = note.split("\n\n")
+        note = '\n\n'.join([i for i in note if i != ""])
         thumb = project.thumbnail_url
         surl = project.url
         lov = project.loves
@@ -312,6 +326,7 @@ async def on_message(message):
     if str(message.content)[0:5] == ">help":
         embed = discord.Embed(title="Help",
                               color=0x885CD4)
+        embed.set_thumbnail(url="https://file.garden/YA1t3RgapBy70QKm/innocent")
         embed.set_author(name=message.author.display_name+" Asked for help:",
                          icon_url=message.author.avatar)
         embed.add_field(name=">help", value="The command you are using right now.",
@@ -328,7 +343,7 @@ async def on_message(message):
         embed.add_field(name=">randome [m]", value="Random project based on the explore page.\n"
                                                    "[m] Explore page to use, can only be \"trending\" or \"popular\".",
                         inline=False)
-        embed.set_footer(text="VERSION 3.7")
+        embed.set_footer(text="BOT VERSION 3.8")
         await message.channel.send(embed=embed)
     if str(message.content)[0:8] == ">randomq":
         await message.add_reaction("<a:searching:1204038774066257950>")
