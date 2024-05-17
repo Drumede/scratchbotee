@@ -196,6 +196,11 @@ async def on_message(message):
         rem = project.remix_count
         vie = project.views
         uurl = "https://scratch.mit.edu/users/" + author
+        date = project.share_date
+        date = date.replace("T", " ")
+        date = project.share_date.replace("Z", "+00:00")
+        date = datetime.fromisoformat(date)
+        date = date.strftime("%b %d, %Y")
         #        response = title + "/n" + author + "/n" + ins + "/n" + note + "/n" + thumb
         #        await message.channel.send(response)
         if len(ins) > 200:
@@ -215,7 +220,7 @@ async def on_message(message):
         if note != "":
             embed.add_field(name="Notes and Credits", value=note,
                             inline=False)
-        embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem}")
+        embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem} 📅 {date}")
         return embed
 
     if "https://" in message.content:
