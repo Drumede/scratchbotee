@@ -223,6 +223,52 @@ async def on_message(message):
         embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem} 📅 {date}")
         return embed
 
+    def comment(id):
+        if id[0] == "pcom":
+            project = scratchattach.get_project(id[1])
+            comment = project.get_comment(comment_id=id[2])
+            content = comment["content"]
+            surl = f"https://scratch.mit.edu/projects/{id[1]}/#comments-{id[2]}"
+            auth = comment["author"]
+            username = auth["username"]
+            uurl = f"https://scratch.mit.edu/users/{username}"
+            icon = auth["image"]
+            date = comment['datetime_created'].replace("Z", "+00:00")
+            date = datetime.fromisoformat(date)
+            date = date.strftime("%b %d, %Y")
+
+            embed = discord.Embed(title=f"Comment left under project \"{project.title}\"",
+                                  url=surl,
+                                  description=f"*\' {content} \'*",
+                                  color=0x885CD4)
+            embed.set_author(name=username, url=uurl,
+                             icon_url=icon)
+            embed.set_footer(text=f"📅 {date}")
+            embed.set_thumbnail(url=project.thumbnail_url)
+            return embed
+        else:
+            project = scratchattach.get_studio(id[1])
+            comment = project.get_comment(comment_id=id[2])
+            content = comment["content"]
+            surl = f"https://scratch.mit.edu/studios/{id[1]}/comments/#comments-{id[2]}"
+            auth = comment["author"]
+            username = auth["username"]
+            uurl = f"https://scratch.mit.edu/users/{username}"
+            icon = auth["image"]
+            date = comment['datetime_created'].replace("Z", "+00:00")
+            date = datetime.fromisoformat(date)
+            date = date.strftime("%b %d, %Y")
+
+            embed = discord.Embed(title=f"Comment left under studio \"{project.title}\"",
+                                  url=surl,
+                                  description=f"*\' {content} \'*",
+                                  color=0x885CD4)
+            embed.set_author(name=username, url=uurl,
+                             icon_url=icon)
+            embed.set_footer(text=f"📅 {date}")
+            embed.set_thumbnail(url=project.image_url)
+            return embed
+
     if "https://" in message.content:
 #        print("yes")
         links = message.content.split("https://")
@@ -242,44 +288,41 @@ async def on_message(message):
                 id[1] = "".join(map(str,filtid))
             print(id)
             if type(id) is list:
+                embed = None
                 if id[0] == "pro":
                     embed = project(id)
-                    await message.channel.send(embed=embed)
                 elif id[0] == "use":
                     embed = user(id)
-                    await message.channel.send(embed=embed)
                 elif id[0] == "stu":
                     embed = studio(id)
-                    await message.channel.send(embed=embed)
                 elif id[0] == "for":
                     embed = topic(id)
-                    await message.channel.send(embed=embed)
                 elif id[0] == "prof":
                     embed = fproject(id)
-                    await message.channel.send(embed=embed)
+                elif id[0] == "pcom" or id[0] == "scom":
+                    embed = comment(id)
+                await message.channel.send(embed=embed)
         else:
             for i in range(len(links)):
                 id = main.parse("https://"+links[i]+"/")
-                if str(id[1]) in id[1]:
-                    filtid = list(filter(lambda x: x != " ", list(str(id[1]))))
-                    id[1] = "".join(map(str,filtid))
+                filtid = list(filter(lambda x: x != " ", list(str(id[1]))))
+                id[1] = "".join(map(str,filtid))
 #                print(id)
                 if type(id) is list:
+                    embed = None
                     if id[0] == "pro":
                         embed = project(id)
-                        embedlist.append(embed)
                     elif id[0] == "use":
                         embed = user(id)
-                        embedlist.append(embed)
                     elif id[0] == "stu":
                         embed = studio(id)
-                        embedlist.append(embed)
                     elif id[0] == "for":
                         embed = topic(id)
-                        embedlist.append(embed)
                     elif id[0] == "prof":
                         embed = fproject(id)
-                        embedlist.append(embed)
+                    elif id[0] == "pcom" or id[0] == "scom":
+                        embed = comment(id)
+                    embedlist.append(embed)
             await message.channel.send(embeds=embedlist)
     elif str(message.content)[0:7] == ">search":
         defaultval = [5,"popular","en"]
