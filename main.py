@@ -15,7 +15,8 @@ def parse(url):
             return ["use",url.split("/")[4]]
 
         elif url.split("/")[3] == "studios":
-            if "#comments-" in url.split("/")[6]:
+            bodge = url+"///"
+            if "#comments-" in bodge.split("/")[6]:
                 return ["scom", int(url.split("/")[4]), url.split("/")[6].replace("#comments-","")]
             return ["stu",int(url.split("/")[4])]
 
