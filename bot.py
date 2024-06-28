@@ -32,7 +32,7 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    if message.author == bot.user:
+    if message.author == bot.user or message.webhook_id:
         return
 
     def project(id):
