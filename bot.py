@@ -8,7 +8,8 @@ from datetime import datetime
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-import math
+import html
+
 load_dotenv()
 TOKEN = os.environ.get("TOKEN")
 GUILD = "just bonus emojis for nitro people (2/2)"
@@ -42,10 +43,10 @@ async def on_message(message):
         title = project.title
         author = project.author
         icon = user.icon_url
-        ins = project.instructions
+        ins = html.unescape(project.instructions)
         ins = ins.split("\n\n")
         ins = '\n\n'.join([i for i in ins if i != ""])
-        note = project.notes
+        note = html.unescape(project.notes)
         note = note.split("\n\n")
         note = '\n\n'.join([i for i in note if i != ""])
         thumb = project.thumbnail_url
@@ -85,10 +86,10 @@ async def on_message(message):
     def user(id):
         user = scratchattach.get_user(id[1])
         icon = user.icon_url
-        abm = user.about_me
+        abm = html.unescape(user.about_me)
         abm = abm.split("\n\n")
         abm = '\n\n'.join([i for i in abm if i != ""])
-        wiw = user.wiwo
+        wiw = html.unescape(user.wiwo)
         wiw = wiw.split("\n\n")
         wiw = '\n\n'.join([i for i in wiw if i != ""])
         con = user.country
@@ -117,8 +118,8 @@ async def on_message(message):
         studio = scratchattach.get_studio(id[1])
         user = studio.managers(limit=1, offset=0)[0]
         icon = user.icon_url
-        title = studio.title
-        desc = studio.description
+        title = html.unescape(studio.title)
+        desc = html.unescape(studio.description)
         desc = desc.split("\n\n")
         desc = '\n\n'.join([i for i in desc if i != ""])
         thumb = studio.image_url
@@ -183,10 +184,10 @@ async def on_message(message):
         title = project.title
         author = project.author
         icon = user.icon_url
-        ins = project.instructions
+        ins = html.unescape(project.instructions)
         ins = ins.split("\n\n")
         ins = '\n\n'.join([i for i in ins if i != ""])
-        note = project.notes
+        note = html.unescape(project.notes)
         note = note.split("\n\n")
         note = '\n\n'.join([i for i in note if i != ""])
         thumb = project.thumbnail_url
@@ -227,7 +228,7 @@ async def on_message(message):
         if id[0] == "pcom":
             project = scratchattach.get_project(id[1])
             comment = project.get_comment(comment_id=id[2])
-            content = comment["content"]
+            content = html.unescape(comment["content"])
             surl = f"https://scratch.mit.edu/projects/{id[1]}/#comments-{id[2]}"
             auth = comment["author"]
             username = auth["username"]
@@ -249,7 +250,7 @@ async def on_message(message):
         else:
             project = scratchattach.get_studio(id[1])
             comment = project.get_comment(comment_id=id[2])
-            content = comment["content"]
+            content = html.unescape(comment["content"])
             surl = f"https://scratch.mit.edu/studios/{id[1]}/comments/#comments-{id[2]}"
             auth = comment["author"]
             username = auth["username"]
