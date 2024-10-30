@@ -17,7 +17,8 @@ GUILD = "just bonus emojis for nitro people (2/2)"
 #intents.message_content = True
 
 activity = discord.Activity(type=discord.ActivityType.watching, name="for >help")
-bot = commands.Bot(command_prefix="!", intents=discord.Intents.all(),activity=activity)
+bot = commands.Bot(command_prefix=">", intents=discord.Intents.all(),activity=activity)
+bot.remove_command('help')
 
 @bot.event
 async def on_ready():
@@ -37,11 +38,9 @@ async def on_message(message):
         return
 
     def project(id):
-
         project = scratchattach.get_project(id[1])
-        user = scratchattach.get_user(project.author)
+        user = project.author()
         title = project.title
-        author = project.author
         icon = user.icon_url
         ins = html.unescape(project.instructions)
         ins = ins.split("\n\n")
@@ -55,7 +54,7 @@ async def on_message(message):
         fav = project.favorites
         rem = project.remix_count
         vie = project.views
-        uurl = "https://scratch.mit.edu/users/" + author
+        uurl = "https://scratch.mit.edu/users/" + user.name
         date = project.share_date
         date = date.replace("T", " ")
         date = project.share_date.replace("Z", "+00:00")
@@ -71,7 +70,7 @@ async def on_message(message):
         embed = discord.Embed(title=title, url=surl,
                               #                              description=ins + "/n" + note,
                               color=0x885CD4)
-        embed.set_author(name=author, url=uurl,
+        embed.set_author(name=user.name, url=uurl,
                          icon_url=icon)
         embed.set_thumbnail(url=thumb)
         if ins != "":
@@ -180,9 +179,8 @@ async def on_message(message):
     def fproject(id):
 
         project = scratchattach.get_project(id[1])
-        user = scratchattach.get_user(project.author)
+        user = project.author()
         title = project.title
-        author = project.author
         icon = user.icon_url
         ins = html.unescape(project.instructions)
         ins = ins.split("\n\n")
@@ -196,7 +194,7 @@ async def on_message(message):
         fav = project.favorites
         rem = project.remix_count
         vie = project.views
-        uurl = "https://scratch.mit.edu/users/" + author
+        uurl = "https://scratch.mit.edu/users/" + user.name
         date = project.share_date
         date = date.replace("T", " ")
         date = project.share_date.replace("Z", "+00:00")
@@ -212,7 +210,7 @@ async def on_message(message):
         embed = discord.Embed(title=title, url=surl,
                               #                              description=ins + "/n" + note,
                               color=0x885CD4)
-        embed.set_author(name=author, url=uurl,
+        embed.set_author(name=user.name, url=uurl,
                          icon_url=icon)
         embed.set_image(url=thumb)
         if ins != "":
@@ -227,14 +225,14 @@ async def on_message(message):
     def comment(id):
         if id[0] == "pcom":
             project = scratchattach.get_project(id[1])
-            comment = project.get_comment(comment_id=id[2])
-            content = html.unescape(comment["content"])
+            comment = project.comment_by_id(comment_id=id[2])
+            content = html.unescape(comment.content)
             surl = f"https://scratch.mit.edu/projects/{id[1]}/#comments-{id[2]}"
-            auth = comment["author"]
-            username = auth["username"]
+            auth = comment.author()
+            username = auth.name
             uurl = f"https://scratch.mit.edu/users/{username}"
-            icon = auth["image"]
-            date = comment['datetime_created'].replace("Z", "+00:00")
+            icon = auth.icon_url
+            date = comment.datetime_created.replace("Z", "+00:00")
             date = datetime.fromisoformat(date)
             date = date.strftime("%b %d, %Y")
 
@@ -247,30 +245,53 @@ async def on_message(message):
             embed.set_footer(text=f"📅 {date}")
             embed.set_thumbnail(url=project.thumbnail_url)
             return embed
-        else:
-            project = scratchattach.get_studio(id[1])
-            comment = project.get_comment(comment_id=id[2])
-            content = html.unescape(comment["content"])
-            surl = f"https://scratch.mit.edu/studios/{id[1]}/comments/#comments-{id[2]}"
-            auth = comment["author"]
-            username = auth["username"]
+        elif id[0] == "pcom":
+            studio = scratchattach.get_studio(id[1])
+            comment = studio.comment_by_id(comment_id=id[2])
+            content = html.unescape(comment.content)
+            surl = f"https://scratch.mit.edu/projects/{id[1]}/#comments-{id[2]}"
+            auth = comment.author()
+            username = auth.name
             uurl = f"https://scratch.mit.edu/users/{username}"
-            icon = auth["image"]
-            date = comment['datetime_created'].replace("Z", "+00:00")
+            icon = auth.icon_url
+            date = comment.datetime_created.replace("Z", "+00:00")
             date = datetime.fromisoformat(date)
             date = date.strftime("%b %d, %Y")
 
-            embed = discord.Embed(title=f"Comment left under studio \"{project.title}\"",
+            embed = discord.Embed(title=f"Comment left under studio \"{studio.title}\"",
                                   url=surl,
                                   description=f"*\' {content} \'*",
                                   color=0x885CD4)
             embed.set_author(name=username, url=uurl,
                              icon_url=icon)
             embed.set_footer(text=f"📅 {date}")
-            embed.set_thumbnail(url=project.image_url)
+            embed.set_thumbnail(url=studio.image_url)
+            return embed
+        elif id[0] == "ppcom":
+            user = scratchattach.get_user(id[1])
+            comment = user.comment_by_id(comment_id=id[2])
+            content = html.unescape(comment.content)
+            surl = f"https://scratch.mit.edu/projects/{id[1]}/#comments-{id[2]}"
+            auth = comment.author()
+            username = auth.name
+            uurl = f"https://scratch.mit.edu/users/{username}"
+            icon = auth.icon_url
+            date = comment.datetime_created.replace("Z", "+00:00")
+            date = datetime.fromisoformat(date)
+            date = date.strftime("%b %d, %Y")
+
+            embed = discord.Embed(title=f"Comment left under profile \"{user.name}\"",
+                                  url=surl,
+                                  description=f"*\' {content} \'*",
+                                  color=0x885CD4)
+            embed.set_author(name=username, url=uurl,
+                             icon_url=icon)
+            embed.set_footer(text=f"📅 {date}")
+            embed.set_thumbnail(url=user.icon_url)
             return embed
 
-    if "https://" in message.content:
+
+    if "https://scratch.mit.edu" in message.content:
 #        print("yes")
         links = message.content.split("https://")
         templinks = []
@@ -300,7 +321,7 @@ async def on_message(message):
                     embed = topic(id)
                 elif id[0] == "prof":
                     embed = fproject(id)
-                elif id[0] == "pcom" or id[0] == "scom":
+                elif id[0] == "pcom" or id[0] == "scom" or id[0] == "ppcom":
                     embed = comment(id)
                 await message.channel.send(embed=embed)
         else:
@@ -325,103 +346,203 @@ async def on_message(message):
                         embed = comment(id)
                     embedlist.append(embed)
             await message.channel.send(embeds=embedlist)
-    elif str(message.content)[0:7] == ">search":
-        defaultval = [5,"popular","en"]
-        try :
-            ctx = message.content[7:].split(",")
-            q = ctx[0]
-            m = ctx[2]
-            l = ctx[3]
-            ll = int(ctx[1])
-        except:
-            await message.channel.send("you have to fill in the parameters!")
-        search = scratchattach.search_projects(query=q, mode=m, language=l, limit=ll, offset=0)
-        await message.add_reaction("<a:searching:1204038774066257950>")
-        if len(search) != 0:
-            embedlist = []
-            for i in range(int(ctx[1])):
-                project = search[i]
-                user = scratchattach.get_user(project.author)
-                title = project.title
-                author = project.author
-                icon = user.icon_url
-                ins = project.instructions
-                note = project.notes
-                thumb = project.thumbnail_url
-                surl = project.url
-                lov = project.loves
-                fav = project.favorites
-                rem = project.remix_count
-                vie = project.views
-                uurl = "https://scratch.mit.edu/users/" + author
-                #        response = title + "/n" + author + "/n" + ins + "/n" + note + "/n" + thumb
-                #        await message.channel.send(response)
-                if len(ins) > 50:
-                    ins = ins[0:50] + "..."
-                if len(note) > 25:
-                    note = note[0:25] + "..."
+    await bot.process_commands(message)
 
-                embed = discord.Embed(title=title, url=surl,
-                                      color=0x885CD4)
-                embed.set_author(name=author, url=uurl,
-                                 icon_url=icon)
-                embed.set_thumbnail(url=thumb)
-                embed.add_field(name="Instructions", value=ins,
-                                inline=False)
-                embed.add_field(name="Notes and Credits", value=note,
-                                inline=False)
-                embedlist.append(embed)
-            await message.channel.send(embeds=embedlist)
-            await message.remove_reaction("<a:searching:1204038774066257950>",bot.user)
-        else:
-            await message.channel.send("no search results returned")
-    if str(message.content)[0:7] == ">invite":
-        await message.channel.send("[invite link](https://discord.com/api/oauth2/authorize?client_id=1203706530818564196&permissions=1067299752000&scope=bot)")
-    if str(message.content)[0:5] == ">help":
-        embed = discord.Embed(title="Help",
-                              color=0x885CD4)
-        embed.set_thumbnail(url="https://file.garden/YA1t3RgapBy70QKm/innocent")
-        embed.set_author(name=message.author.display_name+" Asked for help:",
-                         icon_url=message.author.avatar)
-        embed.add_field(name=">help", value="The command you are using right now.",
+@bot.command()
+async def search(ctx,*args):
+    defaultval = [5, "popular", "en"]
+    try:
+        q = args[0]
+        m = args[2]
+        l = args[3]
+        ll = int(args[1])
+    except:
+        await ctx.send("you have to fill in the parameters!")
+        return
+    search = scratchattach.search_projects(query=q, mode=m, language=l, limit=ll, offset=0)
+    await ctx.message.add_reaction("<a:searching:1204038774066257950>")
+    if len(search) != 0:
+        embedlist = []
+        for i in range(ll):
+            project = search[i]
+            user = project.author()
+            title = project.title
+            author = user.name
+            icon = user.icon_url
+            ins = project.instructions
+            note = project.notes
+            thumb = project.thumbnail_url
+            surl = project.url
+            lov = project.loves
+            fav = project.favorites
+            rem = project.remix_count
+            vie = project.views
+            uurl = "https://scratch.mit.edu/users/" + author
+            #        response = title + "/n" + author + "/n" + ins + "/n" + note + "/n" + thumb
+            #        await message.channel.send(response)
+            if len(ins) > 50:
+                ins = ins[0:50] + "..."
+            if len(note) > 25:
+                note = note[0:25] + "..."
+
+            embed = discord.Embed(title=title, url=surl,
+                                  color=0x885CD4)
+            embed.set_author(name=author, url=uurl,
+                             icon_url=icon)
+            embed.set_thumbnail(url=thumb)
+            embed.add_field(name="Instructions", value=ins,
+                            inline=False)
+            embed.add_field(name="Notes and Credits", value=note,
+                            inline=False)
+            embedlist.append(embed)
+        await ctx.send(embeds=embedlist)
+        await ctx.message.remove_reaction("<a:searching:1204038774066257950>", bot.user)
+    else:
+        await ctx.message.send("no search results returned")
+
+@bot.command()
+async def invite(ctx):
+    await ctx.send("[invite link](https://discord.com/oauth2/authorize?client_id=1203706530818564196)")
+
+@bot.command()
+async def help(ctx):
+    embed = discord.Embed(title="Help",
+                          color=0x885CD4)
+    embed.set_thumbnail(url="https://file.garden/YA1t3RgapBy70QKm/innocent")
+    embed.set_author(name=ctx.author.display_name + " Asked for help:",
+                     icon_url=ctx.author.avatar)
+    embed.add_field(name=">help", value="The command you are using right now.",
+                    inline=False)
+    embed.add_field(name=">search [q] [ll] [m] [l]", value="Takes 4 parameters:\n[q] Query: The search query, has to be in quotes."
+                                                           "\n[ll] Amount to display: The amount of projects to "
+                                                           "display.\n[m] Type: Can be either \"trending\" or \"popular\"\n[l] Language: idk what languages you can use for this except \"en\" sorry",
+                    inline=False)
+    embed.add_field(name=">invite", value="The invite link.",
+                    inline=False)
+    embed.add_field(name=">randomq [q]", value="Random project based on query.\n"
+                                               "[q] Query: Query to search projects under.",
+                    inline=False)
+    embed.add_field(name=">randome [m]", value="Random project based on the explore page.\n"
+                                               "[m] Explore page to use, can only be \"trending\" or \"popular\".",
+                    inline=False)
+    embed.set_footer(text="BOT VERSION 6")
+    await ctx.send(embed=embed)
+
+@bot.command()
+async def randomq(ctx,*,arg):
+    await ctx.message.add_reaction("<a:searching:1204038774066257950>")
+    q = arg
+    a = 3
+    pt = ["popular", "trending"]
+    search = []
+    for i in range(a):
+        search += scratchattach.search_projects(query=q, mode=random.choice(pt), language="en", limit=40, offset=i)
+
+    proj = search[random.randint(0, len(search))]
+    pid = proj.id
+    project = scratchattach.get_project(pid)
+    user = project.author()
+    title = project.title
+    icon = user.icon_url
+    ins = html.unescape(project.instructions)
+    ins = ins.split("\n\n")
+    ins = '\n\n'.join([i for i in ins if i != ""])
+    note = html.unescape(project.notes)
+    note = note.split("\n\n")
+    note = '\n\n'.join([i for i in note if i != ""])
+    thumb = project.thumbnail_url
+    surl = project.url
+    lov = project.loves
+    fav = project.favorites
+    rem = project.remix_count
+    vie = project.views
+    uurl = "https://scratch.mit.edu/users/" + user.name
+    date = project.share_date
+    date = date.replace("T", " ")
+    date = project.share_date.replace("Z", "+00:00")
+    date = datetime.fromisoformat(date)
+    date = date.strftime("%b %d, %Y")
+    #        response = title + "/n" + author + "/n" + ins + "/n" + note + "/n" + thumb
+    #        await message.channel.send(response)
+    if len(ins) > 200:
+        ins = ins[0:200] + "..."
+    if len(note) > 200:
+        note = note[0:200] + "..."
+
+    embed = discord.Embed(title=title, url=surl,
+                          #                              description=ins + "/n" + note,
+                          color=0x885CD4)
+    embed.set_author(name=user.name, url=uurl,
+                     icon_url=icon)
+    embed.set_thumbnail(url=thumb)
+    if ins != "":
+        embed.add_field(name="Instructions", value=ins,
                         inline=False)
-        embed.add_field(name=">search [q],[ll],[m],[l]", value="Takes 4 parameters:\n[q] Query: The search query."
-                                              "\n[ll] Amount to display: The amount of projects to "
-                                              "display.\n[m] Type: Can be either \"trending\" or \"popular\"\n[l] Language: idk what languages you can use for this except \"en\" sorry",
+    if note != "":
+        embed.add_field(name="Notes and Credits", value=note,
                         inline=False)
-        embed.add_field(name=">invite", value="The invite link.",
+    embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem} 📅 {date}")
+
+    await ctx.send(embed=embed)
+    await ctx.message.remove_reaction("<a:searching:1204038774066257950>", bot.user)
+
+
+@bot.command()
+async def randome(ctx, *, arg):
+    await ctx.message.add_reaction("<a:searching:1204038774066257950>")
+    q = arg
+    a = 3
+    pt = ["popular", "trending"]
+    search = []
+    for i in range(a):
+        search += scratchattach.explore_projects(query="*", mode=q, language="en", limit=40, offset=i)
+
+    proj = search[random.randint(0, len(search))]
+    pid = proj.id
+    project = scratchattach.get_project(pid)
+    user = project.author()
+    title = project.title
+    icon = user.icon_url
+    ins = html.unescape(project.instructions)
+    ins = ins.split("\n\n")
+    ins = '\n\n'.join([i for i in ins if i != ""])
+    note = html.unescape(project.notes)
+    note = note.split("\n\n")
+    note = '\n\n'.join([i for i in note if i != ""])
+    thumb = project.thumbnail_url
+    surl = project.url
+    lov = project.loves
+    fav = project.favorites
+    rem = project.remix_count
+    vie = project.views
+    uurl = "https://scratch.mit.edu/users/" + user.name
+    date = project.share_date
+    date = date.replace("T", " ")
+    date = project.share_date.replace("Z", "+00:00")
+    date = datetime.fromisoformat(date)
+    date = date.strftime("%b %d, %Y")
+    #        response = title + "/n" + author + "/n" + ins + "/n" + note + "/n" + thumb
+    #        await message.channel.send(response)
+    if len(ins) > 200:
+        ins = ins[0:200] + "..."
+    if len(note) > 200:
+        note = note[0:200] + "..."
+
+    embed = discord.Embed(title=title, url=surl,
+                          #                              description=ins + "/n" + note,
+                          color=0x885CD4)
+    embed.set_author(name=user.name, url=uurl,
+                     icon_url=icon)
+    embed.set_thumbnail(url=thumb)
+    if ins != "":
+        embed.add_field(name="Instructions", value=ins,
                         inline=False)
-        embed.add_field(name=">randomq [q]", value="Random project based on query.\n"
-                                                   "[q] Query: Query to search projects under.",
+    if note != "":
+        embed.add_field(name="Notes and Credits", value=note,
                         inline=False)
-        embed.add_field(name=">randome [m]", value="Random project based on the explore page.\n"
-                                                   "[m] Explore page to use, can only be \"trending\" or \"popular\".",
-                        inline=False)
-        embed.set_footer(text="BOT VERSION 3.8")
-        await message.channel.send(embed=embed)
-    if str(message.content)[0:8] == ">randomq":
-        await message.add_reaction("<a:searching:1204038774066257950>")
-        q = str(message.content)[8:]
-        a = 3
-        pt = ["popular","trending"]
-        search = []
-        for i in range(a):
-            search += scratchattach.search_projects(query=q, mode=random.choice(pt), language="en", limit=40, offset=i)
-        proj = search[random.randint(0,len(search))]
-        pid = proj.id
-        embed = project([None,int(pid)])
-        await message.channel.send(embed=embed)
-        await message.remove_reaction("<a:searching:1204038774066257950>", bot.user)
-    if str(message.content)[0:8] == ">randome":
-        await message.add_reaction("<a:searching:1204038774066257950>")
-        q = str(message.content)[9:]
-        a = 3
-        search = []
-        for i in range(a):
-            search += scratchattach.explore_projects(query="*", mode=q, language="en", limit=40, offset=i)
-        proj = search[random.randint(0,len(search))]
-        pid = proj.id
-        embed = project([None,int(pid)])
-        await message.channel.send(embed=embed)
-        await message.remove_reaction("<a:searching:1204038774066257950>", bot.user)
+    embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem} 📅 {date}")
+
+    await ctx.send(embed=embed)
+    await ctx.message.remove_reaction("<a:searching:1204038774066257950>", bot.user)
+
 bot.run(TOKEN)

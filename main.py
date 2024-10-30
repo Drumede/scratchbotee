@@ -12,6 +12,8 @@ def parse(url):
             return ["pro",url.split("/")[4]]
 
         elif url.split("/")[3] == "users":
+            if "#comments-" in url.split("/")[5]:
+                return ["ppcom", url.split("/")[4], url.split("/")[5].replace("#comments-","")]
             return ["use",url.split("/")[4]]
 
         elif url.split("/")[3] == "studios":
