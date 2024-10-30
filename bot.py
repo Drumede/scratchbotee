@@ -115,7 +115,7 @@ async def on_message(message):
 
     def studio(id):
         studio = scratchattach.get_studio(id[1])
-        user = studio.managers(limit=1, offset=0)[0]
+        user = studio.host()
         icon = user.icon_url
         title = html.unescape(studio.title)
         desc = html.unescape(studio.description)
