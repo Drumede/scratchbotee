@@ -115,7 +115,7 @@ async def on_message(message):
 
     def studio(id):
         studio = scratchattach.get_studio(id[1])
-        user = studio.host
+        user = studio.managers(limit=1, offset=0)[0]
         icon = user.icon_url
         title = html.unescape(studio.title)
         desc = html.unescape(studio.description)
@@ -425,7 +425,7 @@ async def help(ctx):
     embed.add_field(name=">randome [m]", value="Random project based on the explore page.\n"
                                                "[m] Explore page to use, can only be \"trending\" or \"popular\".",
                     inline=False)
-    embed.set_footer(text="BOT VERSION 6.1")
+    embed.set_footer(text="BOT VERSION 6")
     await ctx.send(embed=embed)
 
 @bot.command()
