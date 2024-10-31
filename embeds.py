@@ -4,6 +4,8 @@ import html
 import discord
 import re
 
+from scratchattach import get_project
+
 
 def project(id):
     project = scratchattach.get_project(id[1])
@@ -47,6 +49,20 @@ def project(id):
     if note != "":
         embed.add_field(name="Notes and Credits", value=note,
                         inline=False)
+    remixparent = project.remix_parent
+    remixroot = project.remix_root
+    if remixparent != None:
+        remix = get_project(remixparent)
+        rname = remix.title
+        rauthor = remix.author()
+        authname = rauthor.name
+        embed.add_field(name="Remix of:", value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
+    if remixroot != None and remixroot != remixparent:
+        remix = get_project(remixroot)
+        rname = remix.title
+        rauthor = remix.author()
+        authname = rauthor.name
+        embed.add_field(name="Original project:", value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
     embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem} 📅 {date}")
     return embed
 
@@ -187,6 +203,22 @@ def fproject(id):
     if note != "":
         embed.add_field(name="Notes and Credits", value=note,
                         inline=False)
+    remixparent = project.remix_parent
+    remixroot = project.remix_root
+    if remixparent != None:
+        remix = get_project(remixparent)
+        rname = remix.title
+        rauthor = remix.author()
+        authname = rauthor.name
+        embed.add_field(name="Remix of:",
+        value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
+    if remixroot != None and remixroot != remixparent:
+        remix = get_project(remixroot)
+        rname = remix.title
+        rauthor = remix.author()
+        authname = rauthor.name
+        embed.add_field(name="Original project:",
+        value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
     embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem} 📅 {date}")
     return embed
 
