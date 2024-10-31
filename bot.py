@@ -21,12 +21,12 @@ bot = commands.Bot(command_prefix=">", intents=discord.Intents.all(),activity=ac
 bot.remove_command('help')
 
 @bot.event
-async def on_ready():
-    print(f'{bot.user} is connected to the following guilds:')
-    for x in bot.guilds:
-        print(
-            f'{x.name}(id: {x.id})'
-        )
+#async def on_ready():
+#    print(f'{bot.user} is connected to the following guilds:')
+#    for x in bot.guilds:
+#        print(
+#            f'{x.name}(id: {x.id})'
+#        )
 
 #@bot.command(name='search')
 #async def search(ctx):
