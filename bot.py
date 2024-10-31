@@ -171,7 +171,10 @@ async def help(ctx):
     embed.add_field(name=">randome [m]", value="Random project based on the explore page.\n"
                                                "[m] Explore page to use, can only be \"trending\" or \"popular\".",
                     inline=False)
-    embed.set_footer(text="BOT VERSION 6")
+    embed.add_field(name="**LINK UTILITIES**", value="**Projects:**\n"
+                                                     "Big thumbnail: Add \"fullscreen\" to the end of a project URL.",
+                    inline=False)
+    embed.set_footer(text="BOT VERSION 6.8")
     await ctx.send(embed=embed)
 
 @bot.command()
