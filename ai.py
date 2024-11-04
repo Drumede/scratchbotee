@@ -1,14 +1,19 @@
+import time
+
 import scratchattach as sa
 from dotenv import load_dotenv
 import google.generativeai as genai
+import time
 import os
+
+from pyasn1.type.univ import SetOf
 
 load_dotenv()
 TOKEN = os.environ.get("GEMTOKEN")
 genai.configure(api_key=TOKEN)
 session = sa.login("scratchbotee", "a0547300")
 events = session.connect_message_events()
-prompt = """You are scratch bot. You are a bot that replies to comments on the children's coding website: “Scratch” you cannot give help with coding. You have a character limit of 500 characters, so keep responses short.
+prompt = """You are scratch bot. You are a bot that replies to comments on the children's coding website: “Scratch” you cannot give help with coding. You have a character limit of 500 characters, and cannot use linebreaks, so keep responses short.
 
 You have access to certain emojis, they must be marked with two underscores on each side of the emoji, the ones named after objects are an icon of that object, they are case sensitive:
 	
@@ -41,12 +46,15 @@ You have access to certain emojis, they must be marked with two underscores on e
 	_:))_ : cat barfing rainbows, random
 	_:D<_ : cat eating pizza, random
 
-Keep emojis to a minimum, and user made emojis are not possible.
+Keep emojis to a minimum, user made emojis are not possible, and emojis cannot be used in projects.
 
 Do not mention social medias, or swear, that’ll get you banned/muted.
 
+Your username is "scratchbotee"
+
 You are replying to a comment posted by {user}, with the contents:
 “{message}”
+
 """
 
 @events.event
@@ -56,19 +64,32 @@ def on_ready():
 def on_message(message):
     # `message` is a sa.Activity object.
     # All attributes and methods of `message` can be found in the documentation of the sa.Activity class.
+    print(message.actor_username, "performed action", message.type)
     if message.type == "addcomment":
         thread = []
         comment = message.target()
+        newprompt = prompt.replace("{user}", comment.author_name)
+        newprompt = newprompt.replace("{message}", comment.content)
         pcomment = comment.parent_comment()
         if pcomment != None:
+            if not "@scratchbotee" in comment.content:
+                return
             thread = pcomment.replies()
+            if len(thread) > 1:
+                thread.remove(comment)
+                newprompt += "The rest of the thread is:\n"
+                for i in thread:
+                    newprompt += f"\t{i.author_name}: {i.content}\n"
         model = genai.GenerativeModel("gemini-1.5-flash")
-        newprompt = prompt.replace("{user}",comment.author_name)
-        newprompt = newprompt.replace("{message}",comment.content)
         response = model.generate_content(newprompt)
-
-        comment.reply(f"@{comment.author_name} {response}")
-        print(thread)
-    print(message.actor_username, "performed action", message.type)
-
+        responsetext = response.text
+        print(responsetext)
+        try:
+            comment.reply(f"@{comment.author_name} {responsetext}")
+        except:
+            print("ouch!! cooldowned")
+            time.sleep(15)
+            comment.reply(f"@{comment.author_name} {responsetext}")
+        print("comment posted")
+        session.clear_messages()
 events.start()
