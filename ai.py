@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import time
 import os
+import re
 
 from pyasn1.type.univ import SetOf
 
@@ -79,13 +80,13 @@ def on_message(message):
                 thread.remove(comment)
                 newprompt += "The rest of the thread is:\n"
                 for i in thread:
-                    newprompt += f"\t{i.author_name}: {i.content}\n"
+                    newcontent = re.sub('@[^<]+? ', '', i.content)
+                    newprompt += f"\t{i.author_name}: {newcontent}\n"
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(newprompt)
         responsetext = response.text
         if f"@{comment.author_name}" in responsetext:
             responsetext.replace(f"@{comment.author_name}","")
-        print(responsetext)
         try:
             comment.reply(f"@{comment.author_name} {responsetext}")
         except:
