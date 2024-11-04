@@ -78,7 +78,7 @@ def on_message(message):
             thread = pcomment.replies()
             if len(thread) > 1:
                 thread.remove(comment)
-                newprompt += "The rest of the thread is:\n"
+                newprompt += "The previous messages in the thread are:\n"
                 for i in thread:
                     newcontent = re.sub('@[^<]+? ', '', i.content)
                     newprompt += f"\t{i.author_name}: {newcontent}\n"
