@@ -9,6 +9,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import html
 import embeds
+import ai
 
 load_dotenv()
 TOKEN = os.environ.get("TOKEN")
