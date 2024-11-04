@@ -83,6 +83,8 @@ def on_message(message):
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(newprompt)
         responsetext = response.text
+        if f"@{comment.author_name}" in responsetext:
+            responsetext.replace(f"@{comment.author_name}","")
         print(responsetext)
         try:
             comment.reply(f"@{comment.author_name} {responsetext}")
