@@ -223,7 +223,7 @@ async def download(ctx, *, arg):
     file = discord.File(r"downloadedproj.sb3")
     file.filename = proj.title + ".sb3"
     await ctx.send(file=file)
-    os.remove("downloaded/downloadedproj.sb3")
+    os.remove("downloadedproj.sb3")
     #except:
     #    await ctx.send("invalid project id")
 
