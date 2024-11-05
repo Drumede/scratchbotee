@@ -215,7 +215,7 @@ async def randome(ctx, *, arg):
 async def download(ctx, *, arg):
     pid = arg
     #try:
-    f = open("downloaded/downloadedproj.sb3","w+")
+    f = open("/downloaded/downloadedproj.sb3","w+")
     f.close()
     proj = scratchattach.get_project(pid)
     body = proj.body()
