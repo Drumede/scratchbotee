@@ -219,8 +219,8 @@ async def download(ctx, *, arg):
     f.close()
     proj = scratchattach.get_project(pid)
     body = proj.body()
-    body.save(filename="downloadedproj.sb3",dir="downloaded")
-    file = discord.File(r"downloaded/downloadedproj.sb3")
+    body.save(filename="downloadedproj.sb3",dir="")
+    file = discord.File(r"downloadedproj.sb3")
     file.filename = proj.title + ".sb3"
     await ctx.send(file=file)
     os.remove("downloaded/downloadedproj.sb3")
