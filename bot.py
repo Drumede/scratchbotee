@@ -211,4 +211,17 @@ async def randome(ctx, *, arg):
     await ctx.send(embed=embed)
     await ctx.message.remove_reaction("<a:searching:1204038774066257950>", bot.user)
 
+@bot.command()
+async def download(ctx, *, arg):
+    pid = arg
+    #try:
+    proj = scratchattach.get_project(pid)
+    proj.download(filename="downloadedproj",dir="downloaded")
+    file = discord.File(r"downloaded/downloadedproj.sb3")
+    file.filename = proj.title + ".sb3"
+    await ctx.send(file=file)
+    os.remove("downloaded/downloadedproj.sb3")
+    #except:
+    #    await ctx.send("invalid project id")
+
 bot.run(TOKEN)

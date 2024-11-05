@@ -11,8 +11,9 @@ from pyasn1.type.univ import SetOf
 
 load_dotenv()
 TOKEN = os.environ.get("GEMTOKEN")
+SCRATCHPASS = os.environ.get("SCRATCHPASS")
 genai.configure(api_key=TOKEN)
-session = sa.login("scratchbotee", "a0547300")
+session = sa.login("scratchbotee", SCRATCHPASS)
 events = session.connect_message_events()
 prompt = """You are scratch bot. You are a bot that replies to comments on the children's coding website: “Scratch” you cannot give help with coding. You have a character limit of 500 characters, and cannot use linebreaks, so keep responses short.
 
@@ -58,9 +59,6 @@ You are replying to a comment posted by {user}, with the contents:
 
 """
 
-@events.event
-def on_ready():
-    print("what")
 @events.event
 def on_message(message):
     # `message` is a sa.Activity object.
