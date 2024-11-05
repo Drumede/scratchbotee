@@ -214,17 +214,17 @@ async def randome(ctx, *, arg):
 @bot.command()
 async def download(ctx, *, arg):
     pid = arg
-    #try:
-    f = open("downloadedproj.sb3","w+")
-    f.close()
-    proj = scratchattach.get_project(pid)
-    body = proj.body()
-    body.save(filename="downloadedproj.sb3",dir="")
-    file = discord.File(r"downloadedproj.sb3")
-    file.filename = proj.title + ".sb3"
-    await ctx.send(file=file)
-    os.remove("downloadedproj.sb3")
-    #except:
-    #    await ctx.send("invalid project id")
+    try:
+        f = open("downloadedproj.sb3","w+")
+        f.close()
+        proj = scratchattach.get_project(pid)
+        body = proj.body()
+        body.save(filename="downloadedproj.sb3",dir="")
+        file = discord.File(r"downloadedproj.sb3")
+        file.filename = proj.title + ".sb3"
+        await ctx.send(file=file)
+        os.remove("downloadedproj.sb3")
+    except:
+        await ctx.send("invalid project id")
 
 bot.run(TOKEN)
