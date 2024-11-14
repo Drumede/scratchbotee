@@ -13,15 +13,19 @@ import ai
 
 load_dotenv()
 TOKEN = os.environ.get("TOKEN")
-GUILD = "just bonus emojis for nitro people (2/2)"
+GUILD = 1185563607736537098
+maintenance = True
 #intents = discord.Intents.default()
 #intents.message_content = True
 
-activity = discord.Activity(type=discord.ActivityType.watching, name="for >help")
+if maintenance:
+    activity = discord.CustomActivity(name="🛠️ undergoing maintenance")
+else:
+    activity = discord.Activity(type=discord.ActivityType.watching, name="for >help")
 bot = commands.Bot(command_prefix=">", intents=discord.Intents.all(),activity=activity)
 bot.remove_command('help')
 
-@bot.event
+#@bot.event
 #async def on_ready():
 #    print(f'{bot.user} is connected to the following guilds:')
 #    for x in bot.guilds:
@@ -38,8 +42,12 @@ async def on_message(message):
     if message.author == bot.user or message.webhook_id:
         return
 
+    if maintenance and message.guild.id != 1185563607736537098:
+        return
+
     if "https://scratch.mit.edu" in message.content:
-#        print("yes")
+#       print("yes")
+
         links = message.content.split("https://")
         templinks = []
         for x in range(len(links)):
@@ -70,6 +78,7 @@ async def on_message(message):
                     embed = embeds.fproject(id)
                 elif id[0] == "pcom" or id[0] == "scom" or id[0] == "ppcom":
                     embed = embeds.comment(id)
+                embed.set_footer(text=f"{embed.footer.text} , Requested by: @{message.author.name}" )
                 await message.channel.send(embed=embed)
         else:
             for i in range(len(links)):
@@ -91,9 +100,18 @@ async def on_message(message):
                         embed = embeds.fproject(id)
                     elif id[0] == "pcom" or id[0] == "scom":
                         embed = embeds.comment(id)
+                    if i == 0:
+                        embed.set_footer(text=f"{embed.footer.text} , Requested by: @{message.author.name}")
                     embedlist.append(embed)
             await message.channel.send(embeds=embedlist)
     await bot.process_commands(message)
+
+@bot.event
+async def on_reaction_add(react,user):
+        if react.emoji == "❌" and react.message.author.id == 1203706530818564196:
+            if f"@{user.name}" in react.message.embeds[0].footer.text:
+                await react.message.delete()
+
 
 @bot.command()
 async def search(ctx,*args):
@@ -178,7 +196,9 @@ async def help(ctx):
     embed.add_field(name="**LINK UTILITIES**", value="**Projects:**\n"
                                                      "Big thumbnail: Add \"fullscreen\" to the end of a project URL.",
                     inline=False)
-    embed.set_footer(text="BOT VERSION 7.1")
+    embed.add_field(name="**OTHER UTILITIES**", value="React with an ❌ emoji to an embed you requested to delete it.",
+                    inline=False)
+    embed.set_footer(text="BOT VERSION 7.5")
     await ctx.send(embed=embed)
 
 @bot.command()

@@ -53,16 +53,18 @@ def project(id):
     remixroot = project.remix_root
     if remixparent != None:
         remix = get_project(remixparent)
-        rname = remix.title
-        rauthor = remix.author()
-        authname = rauthor.name
-        embed.add_field(name="Remix of:", value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
-    if remixroot != None and remixroot != remixparent:
+        if remix.is_shared():
+            rname = remix.title
+            rauthor = remix.author()
+            authname = rauthor.name
+            embed.add_field(name="Remix of:", value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
+    if remixroot != None and remixroot != remixparent and remixroot.is_shared():
         remix = get_project(remixroot)
-        rname = remix.title
-        rauthor = remix.author()
-        authname = rauthor.name
-        embed.add_field(name="Original project:", value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
+        if remix.is_shared():
+            rname = remix.title
+            rauthor = remix.author()
+            authname = rauthor.name
+            embed.add_field(name="Original project:", value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
     embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem} 📅 {date}")
     return embed
 
@@ -207,18 +209,20 @@ def fproject(id):
     remixroot = project.remix_root
     if remixparent != None:
         remix = get_project(remixparent)
-        rname = remix.title
-        rauthor = remix.author()
-        authname = rauthor.name
-        embed.add_field(name="Remix of:",
-        value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
-    if remixroot != None and remixroot != remixparent:
+        if remix.is_shared():
+            rname = remix.title
+            rauthor = remix.author()
+            authname = rauthor.name
+            embed.add_field(name="Remix of:",
+            value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
+    if remixroot != None and remixroot != remixparent and remixroot.is_shared():
         remix = get_project(remixroot)
-        rname = remix.title
-        rauthor = remix.author()
-        authname = rauthor.name
-        embed.add_field(name="Original project:",
-        value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
+        if remix.is_shared():
+            rname = remix.title
+            rauthor = remix.author()
+            authname = rauthor.name
+            embed.add_field(name="Original project:",
+            value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
     embed.set_footer(text=f"👁️ {vie} ❤️ {lov} ⭐ {fav} 🍥 {rem} 📅 {date}")
     return embed
 
