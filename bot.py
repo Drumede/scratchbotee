@@ -14,7 +14,7 @@ import ai
 load_dotenv()
 TOKEN = os.environ.get("TOKEN")
 GUILD = 1185563607736537098
-maintenance = True
+maintenance = False
 #intents = discord.Intents.default()
 #intents.message_content = True
 
