@@ -58,7 +58,7 @@ def project(id):
             rauthor = remix.author()
             authname = rauthor.name
             embed.add_field(name="Remix of:", value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
-    if remixroot != None and remixroot != remixparent and remixroot.is_shared():
+    if remixroot != None and remixroot != remixparent:
         remix = get_project(remixroot)
         if remix.is_shared():
             rname = remix.title
@@ -215,7 +215,7 @@ def fproject(id):
             authname = rauthor.name
             embed.add_field(name="Remix of:",
             value=f"[{rname}](https://scratch.mit.edu/projects/{remix.id}/) by [{authname}](https://scratch.mit.edu/users/{authname}/)")
-    if remixroot != None and remixroot != remixparent and remixroot.is_shared():
+    if remixroot != None and remixroot != remixparent:
         remix = get_project(remixroot)
         if remix.is_shared():
             rname = remix.title
