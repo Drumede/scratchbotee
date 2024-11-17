@@ -198,7 +198,7 @@ async def help(ctx):
                     inline=False)
     embed.add_field(name="**OTHER UTILITIES**", value="React with an ❌ emoji to an embed you requested to delete it.",
                     inline=False)
-    embed.set_footer(text="BOT VERSION 7.6")
+    embed.set_footer(text="BOT VERSION 7.7")
     await ctx.send(embed=embed)
 
 @bot.command()

@@ -249,7 +249,7 @@ def comment(id):
         embed.set_footer(text=f"📅 {date}")
         embed.set_thumbnail(url=project.thumbnail_url)
         return embed
-    elif id[0] == "pcom":
+    elif id[0] == "scom":
         studio = scratchattach.get_studio(id[1])
         comment = studio.comment_by_id(comment_id=id[2])
         content = html.unescape(comment.content)
