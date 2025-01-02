@@ -7,16 +7,6 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import embeds
-from moviepy import (
-    VideoClip,
-    VideoFileClip,
-    ImageSequenceClip,
-    ImageClip,
-    TextClip,
-    ColorClip,
-    AudioFileClip,
-    AudioClip,
-)
 import fixvideo as fixvid
 #import ai
 
