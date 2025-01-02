@@ -191,14 +191,14 @@ async def help(ctx):
     embed.add_field(name=">download [id]", value="Downloads a project.\n"
                                                "[id] Id of project to download.",
                     inline=False)
-    embed.add_field(name=">fixvideo", value="Reply to a broken webm video file to fix it.",
+    embed.add_field(name=">fixvideo", value="Reply to a message with a broken webm video, or attach one to fix it.",
                     inline=False)
     embed.add_field(name="**LINK UTILITIES**", value="**Projects:**\n"
                                                      "Big thumbnail: Add \"fullscreen\" to the end of a project URL.",
                     inline=False)
     embed.add_field(name="**OTHER UTILITIES**", value="React with an ❌ emoji to an embed you requested to delete it.",
                     inline=False)
-    embed.set_footer(text="BOT VERSION 8")
+    embed.set_footer(text="BOT VERSION 8.1")
     await ctx.send(embed=embed)
 
 @bot.command()
@@ -252,26 +252,27 @@ async def download(ctx, *, arg):
 
 @bot.command()
 async def fixvideo(ctx):
-    if not ctx.message.reference:
-        await ctx.send("Reply to the message with the video you want to fix!")
-        return
-    message = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+    if ctx.message.reference:
+        message = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+    else:
+        message = ctx.message
     if message.attachments:
         video = message.attachments[0]
-        try:
-            await video.save(fp=video.filename)
-            fixvid.fix(video.filename)
-            file = discord.File(r"fixVideo.mp4")
-            file.filename = "converted.mp4"
-            await ctx.send(reference=ctx.message,file=file)
-            os.remove(video.filename)
-            os.remove("fixVideo.avi")
-            os.remove("fixVideo.mp4")
-        except:
-            await ctx.send("Video is already fixed! / File isn't a video!")
-            os.remove(video.filename)
-            os.remove("converted.mp4")
     else:
-            await ctx.send("Message has no video!")
+        await ctx.send("Message has no video!")
+        return
+    try:
+        await video.save(fp=video.filename)
+        fixvid.fix(video.filename)
+        file = discord.File(r"fixVideo.mp4")
+        file.filename = "converted.mp4"
+        await ctx.send(reference=ctx.message, file=file)
+        os.remove(video.filename)
+        os.remove("fixVideo.avi")
+        os.remove("fixVideo.mp4")
+    except:
+        await ctx.send("Video is already fixed! / File isn't a video!")
+        os.remove(video.filename)
+        os.remove("converted.mp4")
 
 bot.run(TOKEN)
