@@ -7,7 +7,6 @@ import math
 import moviepy.video.io.ffmpeg_tools
 
 def mix_audio_to_video(pathVideoInput, pathVideoNonAudio, pathVideoOutput):
-  temp = moviepy.video.io.ffmpeg_tools.ffmpeg_extract_audio(pathVideoInput, "audio.mp3")
   audioclip = AudioFileClip("audio.mp3")
   new_audioclip = CompositeAudioClip([audioclip])
   videoclipNew = VideoFileClip(pathVideoNonAudio)
