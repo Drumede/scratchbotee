@@ -191,12 +191,14 @@ async def help(ctx):
     embed.add_field(name=">download [id]", value="Downloads a project.\n"
                                                "[id] Id of project to download.",
                     inline=False)
+    embed.add_field(name=">fixvideo", value="Reply to a broken webm video file to fix it.",
+                    inline=False)
     embed.add_field(name="**LINK UTILITIES**", value="**Projects:**\n"
                                                      "Big thumbnail: Add \"fullscreen\" to the end of a project URL.",
                     inline=False)
     embed.add_field(name="**OTHER UTILITIES**", value="React with an ❌ emoji to an embed you requested to delete it.",
                     inline=False)
-    embed.set_footer(text="BOT VERSION 7.7")
+    embed.set_footer(text="BOT VERSION 8")
     await ctx.send(embed=embed)
 
 @bot.command()
@@ -261,7 +263,7 @@ async def fixvideo(ctx):
             fixvid.fix(video.filename)
             file = discord.File(r"fixVideo.mp4")
             file.filename = "converted.mp4"
-            await ctx.send(file=file)
+            await ctx.send(reference=ctx.message,file=file)
             os.remove(video.filename)
             os.remove("fixVideo.avi")
             os.remove("fixVideo.mp4")
