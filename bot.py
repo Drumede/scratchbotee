@@ -3,13 +3,22 @@ import os
 import random
 import main
 import scratchattach
-from datetime import datetime
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-import html
 import embeds
-import ai
+from moviepy import (
+    VideoClip,
+    VideoFileClip,
+    ImageSequenceClip,
+    ImageClip,
+    TextClip,
+    ColorClip,
+    AudioFileClip,
+    AudioClip,
+)
+import fixvideo as fixvid
+#import ai
 
 load_dotenv()
 TOKEN = os.environ.get("TOKEN")
@@ -35,7 +44,6 @@ bot.remove_command('help')
 
 #@bot.command(name='search')
 #async def search(ctx):
-
 
 @bot.event
 async def on_message(message):
@@ -249,5 +257,29 @@ async def download(ctx, *, arg):
         os.remove("downloadedproj.sb3")
     except:
         await ctx.send("invalid project id")
+
+@bot.command()
+async def fixvideo(ctx):
+    if not ctx.message.reference:
+        await ctx.send("Reply to the message with the video you want to fix!")
+        return
+    message = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+    if message.attachments:
+        video = message.attachments[0]
+        try:
+            await video.save(fp=video.filename)
+            fixvid.fix(video.filename)
+            file = discord.File(r"fixVideo.mp4")
+            file.filename = "converted.mp4"
+            await ctx.send(file=file)
+            os.remove(video.filename)
+            os.remove("fixVideo.avi")
+            os.remove("fixVideo.mp4")
+        except:
+            await ctx.send("Video is already fixed! / File isn't a video!")
+            os.remove(video.filename)
+            os.remove("converted.mp4")
+    else:
+            await ctx.send("Message has no video!")
 
 bot.run(TOKEN)
